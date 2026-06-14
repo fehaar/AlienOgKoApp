@@ -13,7 +13,7 @@ public static class MapSceneSetup
         if (existing != null)
             Object.DestroyImmediate(existing);
 
-        if (Object.FindFirstObjectByType<EventSystem>() == null)
+        if (Object.FindAnyObjectByType<EventSystem>() == null)
         {
             var es = new GameObject("EventSystem");
             es.AddComponent<EventSystem>();
