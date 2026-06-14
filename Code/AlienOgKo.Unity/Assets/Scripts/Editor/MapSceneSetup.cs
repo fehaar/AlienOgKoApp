@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.InputSystem.UI;
 using UnityEditor;
 using UnityEditor.SceneManagement;
 
@@ -13,12 +14,13 @@ public static class MapSceneSetup
         if (existing != null)
             Object.DestroyImmediate(existing);
 
-        if (Object.FindAnyObjectByType<EventSystem>() == null)
-        {
-            var es = new GameObject("EventSystem");
-            es.AddComponent<EventSystem>();
-            es.AddComponent<StandaloneInputModule>();
-        }
+        var existingEs = Object.FindAnyObjectByType<EventSystem>();
+        if (existingEs != null)
+            Object.DestroyImmediate(existingEs.gameObject);
+
+        var es = new GameObject("EventSystem");
+        es.AddComponent<EventSystem>();
+        es.AddComponent<InputSystemUIInputModule>();
 
         var canvasGO = new GameObject("MapCanvas");
         var canvas = canvasGO.AddComponent<Canvas>();

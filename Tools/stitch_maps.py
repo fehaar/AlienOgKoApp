@@ -79,19 +79,12 @@ bottom = m2y + h2
 result = canvas[top:bottom, left:right]
 print(f"Trimmed content: {result.shape[1]}x{result.shape[0]}")
 
-# Resize to power-of-2 (fit inside 2048x2048, maintain aspect ratio with padding)
+# Resize directly to 2048x2048 — no padding, whole texture is map
 TARGET = 2048
 h, w = result.shape[:2]
-scale = TARGET / max(h, w)
-new_w = int(round(w * scale))
-new_h = int(round(h * scale))
-resized = cv2.resize(result, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
-
-final = np.zeros((TARGET, TARGET, 3), dtype=np.uint8)
-pad_x = (TARGET - new_w) // 2
-pad_y = (TARGET - new_h) // 2
-final[pad_y:pad_y+new_h, pad_x:pad_x+new_w] = resized
-print(f"Final: {TARGET}x{TARGET}, content at ({pad_x},{pad_y}) size {new_w}x{new_h}")
+print(f"Content aspect ratio: {w}x{h} ({w/h:.3f})")
+final = cv2.resize(result, (TARGET, TARGET), interpolation=cv2.INTER_LANCZOS4)
+print(f"Final: {TARGET}x{TARGET}")
 
 cv2.imwrite(OUT, final)
 print(f"Saved: {OUT}")
