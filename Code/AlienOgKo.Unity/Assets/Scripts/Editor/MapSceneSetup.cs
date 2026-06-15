@@ -57,6 +57,8 @@ public static class MapSceneSetup
 
         imageGO.transform.localScale = new Vector3(2f, 2f, 1f);
 
+        var interaction = imageGO.AddComponent<MapInteraction>();
+
         var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
