@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
 using UnityEngine.InputSystem.EnhancedTouch;
 using Touch = UnityEngine.InputSystem.EnhancedTouch.Touch;
 
@@ -7,6 +8,7 @@ public class MapInteraction : MonoBehaviour
 {
     [SerializeField] float minZoom = 1f;
     [SerializeField] float maxZoom = 8f;
+    [SerializeField] float scrollZoomSpeed = 0.1f;
 
     RectTransform rt;
     RectTransform parentRt;
@@ -28,6 +30,8 @@ public class MapInteraction : MonoBehaviour
             HandlePan(touches[0]);
         else if (touches.Count == 2)
             HandlePinch(touches[0], touches[1]);
+        else
+            HandleMouse();
 
         Clamp();
     }
@@ -35,10 +39,7 @@ public class MapInteraction : MonoBehaviour
     void HandlePan(Touch t)
     {
         if (t.delta == default) return;
-        // delta is in screen pixels; convert to canvas local units
-        float scale = rt.localScale.x;
-        Vector2 delta = t.delta / CanvasScale();
-        rt.anchoredPosition += delta;
+        rt.anchoredPosition += t.delta / CanvasScale();
     }
 
     void HandlePinch(Touch t0, Touch t1)
@@ -51,28 +52,46 @@ public class MapInteraction : MonoBehaviour
         if (prevDist == 0f) return;
 
         float factor = currDist / prevDist;
+        ZoomTowards((t0.screenPosition + t1.screenPosition) * 0.5f, factor);
+    }
+
+    void HandleMouse()
+    {
+        var mouse = Mouse.current;
+        if (mouse == null) return;
+
+        // Left-drag to pan
+        if (mouse.leftButton.isPressed)
+        {
+            Vector2 delta = mouse.delta.ReadValue() / CanvasScale();
+            rt.anchoredPosition += delta;
+        }
+
+        // Scroll wheel to zoom, centred on mouse position
+        float scroll = mouse.scroll.ReadValue().y;
+        if (scroll != 0f)
+        {
+            float factor = 1f + scroll * scrollZoomSpeed;
+            ZoomTowards(mouse.position.ReadValue(), factor);
+        }
+    }
+
+    void ZoomTowards(Vector2 screenPivot, float factor)
+    {
         float newScale = Mathf.Clamp(rt.localScale.x * factor, minZoom, maxZoom);
         float actualFactor = newScale / rt.localScale.x;
 
-        // Zoom towards the midpoint between fingers
-        Vector2 midScreen = (t0.screenPosition + t1.screenPosition) * 0.5f;
-        Vector2 midCanvas = ScreenToCanvas(midScreen);
-
-        rt.anchoredPosition = midCanvas + (rt.anchoredPosition - midCanvas) * actualFactor;
+        Vector2 pivot = ScreenToCanvas(screenPivot);
+        rt.anchoredPosition = pivot + (rt.anchoredPosition - pivot) * actualFactor;
         rt.localScale = new Vector3(newScale, newScale, 1f);
     }
 
-    // Keep the map covering the full parent rect — no empty edges visible.
     void Clamp()
     {
-        float scale = rt.localScale.x;
         Vector2 parentSize = parentRt.rect.size;
-        // Size of the map in canvas space after scaling
-        Vector2 mapSize = rt.rect.size * scale;
+        Vector2 mapSize = rt.rect.size * rt.localScale.x;
 
-        // Half-extents of the visible region the map can travel
-        Vector2 limit = (mapSize - parentSize) * 0.5f;
-        limit = Vector2.Max(limit, Vector2.zero);
+        Vector2 limit = Vector2.Max((mapSize - parentSize) * 0.5f, Vector2.zero);
 
         Vector2 pos = rt.anchoredPosition;
         pos.x = Mathf.Clamp(pos.x, -limit.x, limit.x);
