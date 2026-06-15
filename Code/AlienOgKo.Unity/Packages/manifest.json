@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "com.kyrylokuzyk.primetween": "file:../Assets/Plugins/PrimeTween/internal/com.kyrylokuzyk.primetween.tgz",
     "dk.gosuman.buildtools": "https://github.com/fehaar/Gosuman.Unity.BuildTools.git",
     "dk.gosuman.puremvc": "https://github.com/GosumanGames/Gosuman.PureMVC.git",
     "com.unity.ai.assistant": "2.12.0-pre.2",
