@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "com.gosuman.buildtools": "https://github.com/fehaar/Gosuman.Unity.BuildTools.git",
+    "dk.gosuman.buildtools": "https://github.com/fehaar/Gosuman.Unity.BuildTools.git",
     "com.unity.ai.assistant": "2.12.0-pre.2",
     "com.unity.ai.navigation": "2.0.12",
     "com.unity.collab-proxy": "2.12.4",
