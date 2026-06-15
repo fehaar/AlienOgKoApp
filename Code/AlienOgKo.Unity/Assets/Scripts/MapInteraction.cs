@@ -60,11 +60,21 @@ public class MapInteraction : MonoBehaviour
         var mouse = Mouse.current;
         if (mouse == null) return;
 
-        // Left-drag to pan
+        bool shift = Keyboard.current != null && Keyboard.current.shiftKey.isPressed;
+
         if (mouse.leftButton.isPressed)
         {
-            Vector2 delta = mouse.delta.ReadValue() / CanvasScale();
-            rt.anchoredPosition += delta;
+            Vector2 delta = mouse.delta.ReadValue();
+            if (shift)
+            {
+                // Shift + vertical drag zooms centred on mouse position
+                float factor = 1f + delta.y * scrollZoomSpeed;
+                ZoomTowards(mouse.position.ReadValue(), factor);
+            }
+            else
+            {
+                rt.anchoredPosition += delta / CanvasScale();
+            }
         }
 
         // Scroll wheel to zoom, centred on mouse position
