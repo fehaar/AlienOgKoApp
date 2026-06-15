@@ -55,6 +55,8 @@ public static class MapSceneSetup
         fitter.aspectMode = AspectRatioFitter.AspectMode.EnvelopeParent;
         fitter.aspectRatio = 1.0f;
 
+        imageGO.transform.localScale = new Vector3(2f, 2f, 1f);
+
         var scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene();
         EditorSceneManager.MarkSceneDirty(scene);
         EditorSceneManager.SaveScene(scene);
