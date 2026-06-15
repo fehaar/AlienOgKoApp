@@ -1,3 +1,3 @@
-[submodule "Code/AlienOgKo.Unity/Assets/Plugins/Gosuman.BuildTools"]
-	path = Code/AlienOgKo.Unity/Assets/Plugins/Gosuman.BuildTools
+[submodule "Code/AlienOgKo.Unity/Packages/Gosuman.BuildTools"]
+	path = Code/AlienOgKo.Unity/Packages/Gosuman.BuildTools
 	url = https://github.com/fehaar/Gosuman.Unity.BuildTools
