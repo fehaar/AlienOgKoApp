@@ -367,6 +367,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::MapInteraction
   minZoom: 1
   maxZoom: 8
+  scrollZoomSpeed: 0.1
 --- !u!114 &488408674
 MonoBehaviour:
   m_ObjectHideFlags: 0
