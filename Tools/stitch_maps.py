@@ -1,6 +1,5 @@
 import cv2
 import numpy as np
-from PIL import Image
 
 MAP1 = r"E:\AlienOgKoApp\Code\AlienOgKo.Unity\Assets\Map\map1.png"
 MAP2 = r"E:\AlienOgKoApp\Code\AlienOgKo.Unity\Assets\Map\map2.png"
@@ -24,73 +23,68 @@ good = matches[:200]
 pts1 = np.float32([kp1[m.queryIdx].pt for m in good])
 pts2 = np.float32([kp2[m.trainIdx].pt for m in good])
 
-# Find translation only (map2 relative to map1)
-H, mask = cv2.findHomography(pts2, pts1, cv2.RANSAC, 5.0)
-inliers = mask.ravel().sum()
-print(f"Matched {len(good)} features, {inliers} inliers")
-print(f"Homography:\n{H}")
+# Compute per-match translation (map2 -> map1 space)
+translations = pts1 - pts2
+
+# RANSAC: find inlier consensus translation
+best_tx, best_ty, best_inliers = 0, 0, 0
+THRESHOLD = 5.0
+for tx, ty in translations:
+    dists = np.sqrt(((translations - [tx, ty]) ** 2).sum(axis=1))
+    inliers = (dists < THRESHOLD).sum()
+    if inliers > best_inliers:
+        best_inliers = inliers
+        best_tx, best_ty = tx, ty
+
+# Refine using mean of inliers
+dists = np.sqrt(((translations - [best_tx, best_ty]) ** 2).sum(axis=1))
+inlier_mask = dists < THRESHOLD
+tx = translations[inlier_mask, 0].mean()
+ty = translations[inlier_mask, 1].mean()
+print(f"Translation: dx={tx:.1f}, dy={ty:.1f} ({inlier_mask.sum()} inliers from {len(good)} matches)")
+
+# Integer offsets for map2 top-left in map1's coordinate space
+dx = int(round(tx))
+dy = int(round(ty))
 
 h1, w1 = img1.shape[:2]
 h2, w2 = img2.shape[:2]
 
-# Transform corners of img2 into img1's coordinate space
-corners2 = np.float32([[0,0],[w2,0],[w2,h2],[0,h2]]).reshape(-1,1,2)
-corners2_t = cv2.perspectiveTransform(corners2, H)
-print(f"map2 corners in map1 space: {corners2_t.reshape(-1,2)}")
+# Canvas bounds
+x_min = min(0, dx)
+y_min = min(0, dy)
+x_max = max(w1, dx + w2)
+y_max = max(h1, dy + h2)
 
-# Compute canvas bounds
-all_corners = np.vstack([
-    [[0,0],[w1,0],[w1,h1],[0,h1]],
-    corners2_t.reshape(-1,2)
-])
-x_min = int(np.floor(all_corners[:,0].min()))
-y_min = int(np.floor(all_corners[:,1].min()))
-x_max = int(np.ceil(all_corners[:,0].max()))
-y_max = int(np.ceil(all_corners[:,1].max()))
-
-offset_x = -x_min
-offset_y = -y_min
+ox = -x_min
+oy = -y_min
 canvas_w = x_max - x_min
 canvas_h = y_max - y_min
-print(f"Canvas size before power-of-2: {canvas_w} x {canvas_h}, offset ({offset_x}, {offset_y})")
-
-# Warp img2 onto canvas
-T = np.array([[1,0,offset_x],[0,1,offset_y],[0,0,1]], dtype=np.float64)
-H_shifted = T @ H
+print(f"Canvas: {canvas_w}x{canvas_h}, map1 at ({ox},{oy}), map2 at ({ox+dx},{oy+dy})")
 
 canvas = np.zeros((canvas_h, canvas_w, 3), dtype=np.uint8)
-warped2 = cv2.warpPerspective(img2, H_shifted, (canvas_w, canvas_h))
 
-# Place img1 on canvas
-canvas[offset_y:offset_y+h1, offset_x:offset_x+w1] = img1
+# Place map2 first (bottom layer), then map1 on top
+m2x, m2y = ox + dx, oy + dy
+canvas[m2y:m2y+h2, m2x:m2x+w2] = img2
+canvas[oy:oy+h1, ox:ox+w1] = img1
 
-# Blend: use img1 where it exists, otherwise warped2
-mask1 = np.zeros((canvas_h, canvas_w), dtype=np.uint8)
-mask1[offset_y:offset_y+h1, offset_x:offset_x+w1] = 255
-result = np.where(mask1[:,:,None] > 0, canvas, warped2)
+# Trim black borders: find the intersection column range where both maps contribute
+# so we get a clean rectangle with no black edge gaps
+left  = max(ox, m2x)
+right = min(ox + w1, m2x + w2)
+top   = oy
+bottom = m2y + h2
 
-# Crop to content (remove empty rows/cols)
-gray_result = cv2.cvtColor(result, cv2.COLOR_BGR2GRAY)
-rows = np.any(gray_result > 0, axis=1)
-cols = np.any(gray_result > 0, axis=0)
-r0, r1 = np.where(rows)[0][[0,-1]]
-c0, c1 = np.where(cols)[0][[0,-1]]
-result = result[r0:r1+1, c0:c1+1]
-print(f"Cropped content size: {result.shape[1]} x {result.shape[0]}")
+result = canvas[top:bottom, left:right]
+print(f"Trimmed content: {result.shape[1]}x{result.shape[0]}")
 
-# Resize to power-of-2 (fit inside 2048x2048, maintain aspect ratio with padding)
+# Resize directly to 2048x2048 — no padding, whole texture is map
 TARGET = 2048
 h, w = result.shape[:2]
-scale = TARGET / max(h, w)
-new_w = int(round(w * scale))
-new_h = int(round(h * scale))
-resized = cv2.resize(result, (new_w, new_h), interpolation=cv2.INTER_LANCZOS4)
-
-final = np.zeros((TARGET, TARGET, 3), dtype=np.uint8)
-pad_x = (TARGET - new_w) // 2
-pad_y = (TARGET - new_h) // 2
-final[pad_y:pad_y+new_h, pad_x:pad_x+new_w] = resized
-print(f"Final texture: {TARGET}x{TARGET}, content at ({pad_x},{pad_y}) size {new_w}x{new_h}")
+print(f"Content aspect ratio: {w}x{h} ({w/h:.3f})")
+final = cv2.resize(result, (TARGET, TARGET), interpolation=cv2.INTER_LANCZOS4)
+print(f"Final: {TARGET}x{TARGET}")
 
 cv2.imwrite(OUT, final)
 print(f"Saved: {OUT}")
