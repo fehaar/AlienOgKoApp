@@ -1,3 +1,6 @@
+# Local build version (x.y) — each developer keeps their own copy
+version.txt
+
 # Unity generated
 [Ll]ibrary/
 [Tt]emp/
