@@ -1,0 +1,52 @@
+name: Unity Web Build
+
+on:
+#  push:
+#    branches:
+#      - develop
+#    paths:
+#      - 'Code/AlienOgKo.Unity/**'
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build project
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate Github App token
+        uses: actions/create-github-app-token@v2
+        id: app-token
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.SUBMODULE_PRIVATE_KEY }}
+          owner: ${{ github.repository_owner }}
+
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
+          lfs: true
+          submodules: recursive
+
+      - uses: actions/cache@v3
+        with:
+          path: Code/AlienOgKo.Unity/Library
+          key: Library-AlienOgKo-Web-${{ hashFiles('Code/AlienOgKo.Unity/Assets/**', 'Code/AlienOgKo.Unity/Packages/**', 'Code/AlienOgKo.Unity/ProjectSettings/**') }}
+          restore-keys: |
+            Library-AlienOgKo-
+
+      - name: Build project
+        uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
+        with:
+          targetPlatform: WebGL
+          projectPath: 'Code/AlienOgKo.Unity'
+#         buildProfile: 'Assets/Settings/Build Profiles/Web-Dev.asset'
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Build
+          path: build
