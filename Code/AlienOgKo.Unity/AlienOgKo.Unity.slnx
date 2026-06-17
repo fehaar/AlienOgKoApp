@@ -1,5 +1,16 @@
 ﻿<Solution>
+  <Project Path="PlayFab.csproj" />
+  <Project Path="com.Tivadar.Best.HTTP.csproj" />
+  <Project Path="Gosuman.TBF.Shared.csproj" />
   <Project Path="Assembly-CSharp-Editor.csproj" />
   <Project Path="Assembly-CSharp.csproj" />
+  <Project Path="com.Tivadar.Best.SignalR.csproj" />
+  <Project Path="Gosuman.EntitySystem.csproj" />
+  <Project Path="Gosuman.TBF.Client.csproj" />
+  <Project Path="com.Tivadar.Best.HTTP.Profiler.Editor.csproj" />
+  <Project Path="Gosuman.TBF.Logic.csproj" />
+  <Project Path="com.Tivadar.Best.WebSockets.csproj" />
   <Project Path="PrimeTween.Installer.csproj" />
+  <Project Path="Ulid.csproj" />
+  <Project Path="PlayFabSDKEditor.csproj" />
 </Solution>
