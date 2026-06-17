@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using Gosuman.TBF;
 using Gosuman.TBF.Commands;
 using Gosuman.TBF.Logic;
 using Gosuman.TBF.Proxies;
@@ -57,7 +58,7 @@ namespace AlienOgKo
             facade.RegisterCommand(ServerProxy.Notifications.LoginTicketReceived, () => new LoginTicketReceivedCommand());
             facade.RegisterCommand(PlayFabProxy.Notifications.LoggedInToPlayFab, () => new LoggedInToPlayFabCommand());
 
-            var mapView = Object.FindAnyObjectOfType<MapView>();
+            var mapView = Object.FindAnyObjectByType<MapView>();
             if (mapView != null)
                 facade.RegisterMediator(new MapMediator(mapView));
 
