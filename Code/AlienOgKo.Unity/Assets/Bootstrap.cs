@@ -62,6 +62,14 @@ namespace AlienOgKo
             if (mapView != null)
                 facade.RegisterMediator(new MapMediator(mapView));
 
+            var topBarView = Object.FindAnyObjectByType<TopBarView>();
+            if (topBarView != null)
+                facade.RegisterMediator(new TopBarMediator(topBarView));
+
+            var bottomBarView = Object.FindAnyObjectByType<BottomBarView>();
+            if (bottomBarView != null)
+                facade.RegisterMediator(new BottomBarMediator(bottomBarView));
+
             var serverSettings = Resources.Load<ServerSettings>(ServerSettings.ResourcePath);
             if (serverSettings == null)
             {
