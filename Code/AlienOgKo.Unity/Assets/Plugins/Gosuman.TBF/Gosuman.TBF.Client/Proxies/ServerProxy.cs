@@ -35,8 +35,6 @@ namespace Gosuman.TBF.Proxies
 
         public static class Notifications
         {
-            public const string LogInUser = "ServerProxy.LogInUser";
-            public const string LoginTicketReceived = "ServerProxy.LoginTicketReceived";
             public const string ConnectedToHub = "ServerProxy.ConnectedToHub";
             public const string CreateGame = "ServerProxy.CreateGame";
             public const string GameCreated = "ServerProxy.GameCreated";
@@ -47,33 +45,9 @@ namespace Gosuman.TBF.Proxies
             public const string GameDataReceived = "ServerProxy.GameDataReceived";
         }
 
-        public async UniTaskVoid Login(string customId)
-        {
-            var request = HTTPRequest.CreatePost($"{baseUri}/identity");
-            request.SetHeader("Content-Type", "application/json");
-            request.UploadSettings.UploadStream = new MemoryStream(Encoding.UTF8.GetBytes(JsonConvert.SerializeObject(customId)));
-            await request.Send().WithCancellation(Application.exitCancellationToken);
-            if (request.State != HTTPRequestStates.Finished)
-            {
-                // Something went wrong. Should we look at retrying?
-                Debug.LogError($"Could not connect to server. {request.State} {request.Exception}");
-                return;
-            }
-
-            if (request.Response.IsSuccess)
-            {
-                var ticket = Encoding.UTF8.GetString(request.Response.Data);
-                SendNotification(Notifications.LoginTicketReceived, ticket);
-            }
-            else
-            {
-                Debug.LogError($"Error logging in: {request.Response.StatusCode} {request.Response.DataAsText}");
-            }
-        }
-
         public async UniTaskVoid ConnectToHub(string authenticationTicket)
         {
-            var playFabProxy = Facade.RetrieveProxy(PlayFabProxy.NAME) as PlayFabProxy;
+            var authProxy = Facade.RetrieveProxy(AuthProxy.NAME) as AuthProxy;
             if (Application.platform == RuntimePlatform.WebGLPlayer)
             {
                 gameHub = new HubConnection(new Uri($"{baseUri}/webGameHub"), new JsonProtocol(new JsonDotNetEncoder(JsonConvert.DefaultSettings())));
@@ -82,7 +56,10 @@ namespace Gosuman.TBF.Proxies
             else
             {
                 gameHub = new HubConnection(new Uri($"{baseUri}/gameHub"), new JsonProtocol(new JsonDotNetEncoder(JsonConvert.DefaultSettings())));
-                gameHub.AuthenticationProvider = new HubAuthenticationProvider(authenticationTicket);
+                gameHub.AuthenticationProvider = new HubAuthenticationProvider(
+                    authProxy.Backend.AuthorizationHeader,
+                    authProxy.Backend.AccessTokenQueryParam,
+                    authProxy.Backend.Token);
             }
             gameHub.OnConnected += GameHub_OnConnected;
             gameHub.OnClosed += GameHub_OnClosed;

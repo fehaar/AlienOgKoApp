@@ -6,11 +6,15 @@ namespace Gosuman.TBF.Providers
 {
     public class HubAuthenticationProvider : IAuthenticationProvider
     {
-        private string sessionTicket;
+        private readonly string authorizationHeader;
+        private readonly string queryParamName;
+        private readonly string token;
 
-        public HubAuthenticationProvider(string sessionTicket)
+        public HubAuthenticationProvider(string authorizationHeader, string queryParamName, string token)
         {
-            this.sessionTicket = sessionTicket;
+            this.authorizationHeader = authorizationHeader;
+            this.queryParamName = queryParamName;
+            this.token = token;
         }
 
         public bool IsPreAuthRequired => false;
@@ -28,7 +32,7 @@ namespace Gosuman.TBF.Providers
         {
             // Add Authorization header to http requests, add access_token param to the uri otherwise
             if (Best.HTTP.Hosts.Connections.HTTPProtocolFactory.GetProtocolFromUri(request.CurrentUri) == Best.HTTP.Hosts.Connections.SupportedProtocols.HTTP)
-                request.SetHeader("Authorization", "PlayFab " + sessionTicket);
+                request.SetHeader("Authorization", authorizationHeader);
             else
 #if !BESTHTTP_DISABLE_WEBSOCKET
                 if (Best.HTTP.Hosts.Connections.HTTPProtocolFactory.GetProtocolFromUri(request.Uri) != Best.HTTP.Hosts.Connections.SupportedProtocols.WebSocket)
@@ -60,7 +64,7 @@ namespace Gosuman.TBF.Providers
         private Uri PrepareUriImpl(Uri uri)
         {
             string query = string.IsNullOrEmpty(uri.Query) ? "" : uri.Query + "&";
-            UriBuilder uriBuilder = new UriBuilder(uri.Scheme, uri.Host, uri.Port, uri.AbsolutePath, query + "playFab=" + sessionTicket);
+            UriBuilder uriBuilder = new UriBuilder(uri.Scheme, uri.Host, uri.Port, uri.AbsolutePath, query + queryParamName + "=" + token);
             return uriBuilder.Uri;
         }
 

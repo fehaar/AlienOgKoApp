@@ -8,6 +8,7 @@
         "com.Tivadar.Best.HTTP",
         "com.Tivadar.Best.SignalR",
         "PlayFab",
+        "NakamaRuntime",
         "UniTask",
         "Ulid"
     ],

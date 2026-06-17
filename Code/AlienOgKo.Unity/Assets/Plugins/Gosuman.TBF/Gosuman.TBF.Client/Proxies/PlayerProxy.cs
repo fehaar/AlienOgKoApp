@@ -38,17 +38,17 @@ namespace Gosuman.TBF.Proxies
                 idPath = Path.Combine(Application.persistentDataPath, "id-editor");
             //}
 #endif
-            if (File.Exists(idPath))
-            {
-                UserID = File.ReadAllText(idPath);
-                SendNotification(Notifications.PlayerLoggedIn, UserID);
-            }
-            else
+            if (!File.Exists(idPath))
             {
                 UserID = Ulid.NewUlid().ToString();
                 File.WriteAllText(idPath, UserID);
-                SendNotification(ServerProxy.Notifications.LogInUser, UserID);
             }
+            else
+            {
+                UserID = File.ReadAllText(idPath);
+            }
+            // The configured identity backend authenticates (and creates the account if new).
+            SendNotification(Notifications.PlayerLoggedIn, UserID);
         }
     }
 }

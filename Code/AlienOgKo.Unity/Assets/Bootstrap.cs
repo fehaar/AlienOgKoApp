@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Gosuman.TBF;
+using Gosuman.TBF.Auth;
 using Gosuman.TBF.Commands;
 using Gosuman.TBF.Logic;
 using Gosuman.TBF.Proxies;
@@ -54,9 +55,7 @@ namespace AlienOgKo
             JsonConvert.DefaultSettings = () => JsonConverters.GetJsonSerializerSettings();
 
             facade.RegisterCommand(PlayerProxy.Notifications.PlayerLoggedIn, () => new PlayerLoggedInCommand());
-            facade.RegisterCommand(ServerProxy.Notifications.LogInUser, () => new LoginWithCustomIdCommand());
-            facade.RegisterCommand(ServerProxy.Notifications.LoginTicketReceived, () => new LoginTicketReceivedCommand());
-            facade.RegisterCommand(PlayFabProxy.Notifications.LoggedInToPlayFab, () => new LoggedInToPlayFabCommand());
+            facade.RegisterCommand(AuthProxy.Notifications.LoggedIn, () => new LoggedInCommand());
 
             var mapView = Object.FindAnyObjectByType<MapView>();
             if (mapView != null)
@@ -82,7 +81,23 @@ namespace AlienOgKo
             facade.RegisterProxy(new ServerProxy(serverSettings.RemoteServerUrl));
 #endif
 
+            facade.RegisterProxy(new AuthProxy(CreateAuthBackend(serverSettings)));
+
+            // Registered last: PlayerProxy.OnRegister kicks off login, which needs AuthProxy + ServerProxy ready.
             facade.RegisterProxy(new PlayerProxy());
+        }
+
+        private static IAuthBackend CreateAuthBackend(ServerSettings settings)
+        {
+            switch (settings.AuthBackend)
+            {
+                case AuthBackendType.PlayFab:
+                    return new PlayFabAuthBackend();
+                case AuthBackendType.Nakama:
+                    return new NakamaAuthBackend(settings.NakamaScheme, settings.NakamaHost, settings.NakamaPort, settings.NakamaServerKey);
+                default:
+                    throw new System.NotSupportedException($"Unknown auth backend: {settings.AuthBackend}");
+            }
         }
     }
 }
