@@ -1,0 +1,10 @@
+bin/
+obj/
+.vs/
+nuget.config
+
+# NCrunch files
+*.ncrunch*
+_NCrunch
+_NCrunch*/
+nCrunch*

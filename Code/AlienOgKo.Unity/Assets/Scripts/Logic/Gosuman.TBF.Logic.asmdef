@@ -1,0 +1,17 @@
+{
+    "name": "Gosuman.TBF.Logic",
+    "rootNamespace": "Gosuman.TBF.Logic",
+    "references": [
+        "GUID:82f9f4e62cc9e7a4b82eac513d0ddfb8",
+        "GUID:4091cff43194bf84e82ca4e5c9fe7041"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": true
+}

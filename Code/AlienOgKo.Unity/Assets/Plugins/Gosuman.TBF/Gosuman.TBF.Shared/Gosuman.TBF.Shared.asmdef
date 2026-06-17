@@ -1,0 +1,16 @@
+{
+    "name": "Gosuman.TBF.Shared",
+    "rootNamespace": "",
+    "references": [
+        "GUID:82f9f4e62cc9e7a4b82eac513d0ddfb8"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

@@ -1,0 +1,16 @@
+{
+    "name": "Gosuman.EntitySystem",
+    "rootNamespace": "Gosuman.EntitySystem",
+    "references": [
+        "GUID:3dd436b5b2e11f944a89f0ee472bf769"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

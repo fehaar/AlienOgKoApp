@@ -1,0 +1,22 @@
+{
+    "name": "Gosuman.TBF.Logic.Server",
+    "rootNamespace": "Gosuman.TBF.Logic.Server",
+    "references": [
+        "GUID:82f9f4e62cc9e7a4b82eac513d0ddfb8",
+        "GUID:6311b0ec036d2ca4bbd81783b7bb8807",
+        "GUID:a016683f63a14794797b60c488cf5731",
+        "GUID:0bb447733891786498e3ba05da2f50ff",
+        "GUID:3dd436b5b2e11f944a89f0ee472bf769"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "OFFLINE_CAPABLE"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

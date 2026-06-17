@@ -1,0 +1,34 @@
+name: NuGet Generation
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Update NuGet package
+    permissions: write-all
+    steps:
+
+      - name: Checkout repository
+        uses: actions/checkout@v6
+
+
+      - name: Setup .NET Core @ Latest
+        uses: actions/setup-dotnet@v5
+        with:
+          source-url: https://nuget.pkg.github.com/GosumanGames/index.json
+        env:
+          NUGET_AUTH_TOKEN: ${{secrets.GITHUB_TOKEN}}        
+
+      - name: Build solution and generate NuGet package
+        run: |  
+          cd Gosuman.EntitySystem
+          dotnet build -c Release /p:Version=1.0.4.${{ github.run_number }}
+          dotnet pack -c Release -o out /p:Version=1.0.4.${{ github.run_number }}
+
+      - name: Push to GitHub package registry
+        run: dotnet nuget push ./Gosuman.EntitySystem/out/*.nupkg --skip-duplicate --api-key ${{secrets.GITHUB_TOKEN}}
+  

@@ -1,0 +1,3 @@
+[submodule "Gosuman.EntitySystem"]
+	path = Gosuman.EntitySystem
+	url = https://github.com/GosumanGames/Gosuman.EntitySystem.git

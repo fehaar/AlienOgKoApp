@@ -1,0 +1,23 @@
+{
+    "name": "Gosuman.TBF.Client",
+    "rootNamespace": "Gosuman.TBF",
+    "references": [
+        "Gosuman.TBF.Shared",
+        "Gosuman.EntitySystem",
+        "Gosuman.PureMVC",
+        "com.Tivadar.Best.HTTP",
+        "com.Tivadar.Best.SignalR",
+        "PlayFab",
+        "UniTask",
+        "Ulid"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
