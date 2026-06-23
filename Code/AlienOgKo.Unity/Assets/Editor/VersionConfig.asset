@@ -9,7 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 30812482b2cc1bd44b917e69f964586d, type: 3}
+  m_Script: {fileID: 11500000, guid: f6c8e0a2d4f6c8e0a2d4f6c8e0a2d4f6, type: 3}
   m_Name: VersionConfig
   m_EditorClassIdentifier: Gosuman.BuildTools.Editor::Gosuman.BuildTools.VersionConfig
   major: 1
