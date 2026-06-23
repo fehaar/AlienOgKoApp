@@ -40,12 +40,12 @@ namespace AlienOgKo
 
             if (request.State != HTTPRequestStates.Finished || !request.Response.IsSuccess)
             {
-                Debug.LogError($"Could not load places. {request.State} {request.Response?.StatusCode}");
+                Debug.LogError($"Could not load places. {request.State} {request.Response?.StatusCode} {request.Exception}");
                 SendNotification(Notifications.LoadPlacesFailed);
                 return;
             }
 
-            var allPlaces = JsonConvert.DeserializeObject<List<Place>>(request.Response.DataAsText);
+            var allPlaces = JsonConvert.DeserializeObject<List<Place>>(request.Response.DataAsText) ?? new List<Place>();
             Places = MapBounds.FilterContained(allPlaces, settings.NeLatitude, settings.NeLongitude, settings.SwLatitude, settings.SwLongitude);
             Debug.Log($"MapDataProxy loaded {Places.Count} places within map bounds");
             SendNotification(Notifications.PlacesLoaded, Places);
