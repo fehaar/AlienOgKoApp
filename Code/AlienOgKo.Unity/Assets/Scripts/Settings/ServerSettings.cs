@@ -14,9 +14,6 @@ namespace Gosuman.TBF
     {
         public const string ResourcePath = "ServerSettings";
 
-        [SerializeField] private string localServerUrl = "https://localhost:32769";
-        [SerializeField] private string remoteServerUrl = "";
-
         [Header("Identity backend")]
         [SerializeField] private AuthBackendType authBackend = AuthBackendType.Nakama;
 
@@ -25,9 +22,6 @@ namespace Gosuman.TBF
         [SerializeField] private string nakamaHost = "localhost";
         [SerializeField] private int nakamaPort = 7350;
         [SerializeField] private string nakamaServerKey = "defaultkey";
-
-        public string LocalServerUrl => localServerUrl;
-        public string RemoteServerUrl => remoteServerUrl;
 
         public AuthBackendType AuthBackend => authBackend;
         public string NakamaScheme => nakamaScheme;
