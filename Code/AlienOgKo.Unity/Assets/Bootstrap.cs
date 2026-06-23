@@ -55,7 +55,7 @@ namespace AlienOgKo
             JsonConvert.DefaultSettings = () => JsonConverters.GetJsonSerializerSettings();
 
             facade.RegisterCommand(PlayerProxy.Notifications.PlayerLoggedIn, () => new PlayerLoggedInCommand());
-            facade.RegisterCommand(AuthProxy.Notifications.LoggedIn, () => new LoggedInCommand());
+            facade.RegisterCommand(AuthProxy.Notifications.LoggedIn, () => new PlayerAuthenticatedCommand());
 
             var mapView = Object.FindAnyObjectByType<MapView>();
             if (mapView != null)
@@ -75,15 +75,10 @@ namespace AlienOgKo
                 Debug.LogError($"ServerSettings asset not found at Resources/{ServerSettings.ResourcePath}. Create one via Assets > Create > Gosuman > Server Settings and place it under Assets/Resources.");
                 return;
             }
-#if LOCAL_SERVER
-            facade.RegisterProxy(new ServerProxy(serverSettings.LocalServerUrl));
-#else
-            facade.RegisterProxy(new ServerProxy(serverSettings.RemoteServerUrl));
-#endif
 
             facade.RegisterProxy(new AuthProxy(CreateAuthBackend(serverSettings)));
 
-            // Registered last: PlayerProxy.OnRegister kicks off login, which needs AuthProxy + ServerProxy ready.
+            // Registered last: PlayerProxy.OnRegister kicks off login, which needs AuthProxy ready.
             facade.RegisterProxy(new PlayerProxy());
 
             var mapSettings = Resources.Load<MapSettings>(MapSettings.ResourcePath);
