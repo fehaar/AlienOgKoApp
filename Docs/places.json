@@ -1,0 +1,272 @@
+[
+    {
+        "ID": 1,
+        "TS": "2026-06-03T20:01:41.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.673489,
+        "lowerRightY2": 12.48769,
+        "tag": "Sort scene",
+        "upperLeftX1": 55.673738,
+        "upperLeftY1": 12.486944
+    },
+    {
+        "ID": 2,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.677706,
+        "lowerRightY2": 12.497586,
+        "tag": "KB Hallen",
+        "upperLeftX1": 55.678427,
+        "upperLeftY1": 12.492616
+    },
+    {
+        "ID": 3,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.63747,
+        "lowerRightY2": 12.527834,
+        "tag": "Valbyparken",
+        "upperLeftX1": 55.644686,
+        "upperLeftY1": 12.510619
+    },
+    {
+        "ID": 4,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.639268,
+        "lowerRightY2": 12.52652,
+        "tag": "Syd For Solen",
+        "upperLeftX1": 55.641222,
+        "upperLeftY1": 12.519897
+    },
+    {
+        "ID": 5,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.667487,
+        "lowerRightY2": 12.544715,
+        "tag": "Vega",
+        "upperLeftX1": 55.668716,
+        "upperLeftY1": 12.543181
+    },
+    {
+        "ID": 6,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.672155,
+        "lowerRightY2": 12.488718,
+        "tag": "\u00c5lholm Bodega",
+        "upperLeftX1": 55.672502,
+        "upperLeftY1": 12.487908
+    },
+    {
+        "ID": 7,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.666519,
+        "lowerRightY2": 12.505252,
+        "tag": "Nanok Bar",
+        "upperLeftX1": 55.667022,
+        "upperLeftY1": 12.504528
+    },
+    {
+        "ID": 8,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.678125,
+        "lowerRightY2": 12.50117,
+        "tag": "Domdal Bodega",
+        "upperLeftX1": 55.678712,
+        "upperLeftY1": 12.49955
+    },
+    {
+        "ID": 9,
+        "TS": "2026-02-23T11:04:15.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.630924,
+        "lowerRightY2": 12.538649,
+        "tag": "Valby",
+        "upperLeftX1": 55.67723,
+        "upperLeftY1": 12.481308
+    },
+    {
+        "ID": 10,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 54.723427,
+        "lowerRightY2": 13.166591,
+        "tag": "Danmark",
+        "upperLeftX1": 57.755378,
+        "upperLeftY1": 7.878425
+    },
+    {
+        "ID": 11,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.556184,
+        "lowerRightY2": 12.703558,
+        "tag": "K\u00f8benhavn",
+        "upperLeftX1": 55.76222,
+        "upperLeftY1": 12.298098
+    },
+    {
+        "ID": 12,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.03593,
+        "lowerRightY2": 12.83352,
+        "tag": "Sj\u00e6lland",
+        "upperLeftX1": 56.083315,
+        "upperLeftY1": 10.869422
+    },
+    {
+        "ID": 13,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.604978,
+        "lowerRightY2": 12.161376,
+        "tag": "Roskilde",
+        "upperLeftX1": 55.658209,
+        "upperLeftY1": 12.039997
+    },
+    {
+        "ID": 14,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.60926,
+        "lowerRightY2": 12.098569,
+        "tag": "Roskilde Festival",
+        "upperLeftX1": 55.62291,
+        "upperLeftY1": 12.064422
+    },
+    {
+        "ID": 15,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.620282,
+        "lowerRightY2": 12.073561,
+        "tag": "Apollo",
+        "upperLeftX1": 55.621252,
+        "upperLeftY1": 12.071597
+    },
+    {
+        "ID": 16,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.619161,
+        "lowerRightY2": 12.074507,
+        "tag": "Eos",
+        "upperLeftX1": 55.620077,
+        "upperLeftY1": 12.072888
+    },
+    {
+        "ID": 17,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.620094,
+        "lowerRightY2": 12.07788,
+        "tag": "Orange",
+        "upperLeftX1": 55.62164,
+        "upperLeftY1": 12.076206
+    },
+    {
+        "ID": 18,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.618955,
+        "lowerRightY2": 12.077956,
+        "tag": "Gaia",
+        "upperLeftX1": 55.619643,
+        "upperLeftY1": 12.076095
+    },
+    {
+        "ID": 19,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.621822,
+        "lowerRightY2": 12.083238,
+        "tag": "Avalon",
+        "upperLeftX1": 55.622544,
+        "upperLeftY1": 12.081465
+    },
+    {
+        "ID": 20,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.620357,
+        "lowerRightY2": 12.081229,
+        "tag": "Platform",
+        "upperLeftX1": 55.621237,
+        "upperLeftY1": 12.079615
+    },
+    {
+        "ID": 21,
+        "TS": "2026-02-14T21:39:43.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.618803,
+        "lowerRightY2": 12.085418,
+        "tag": "Gr\u00f8n",
+        "upperLeftX1": 55.620257,
+        "upperLeftY1": 12.083159
+    },
+    {
+        "ID": 22,
+        "TS": "2026-02-28T17:18:11.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.668201,
+        "lowerRightY2": 12.54995,
+        "tag": "Grimal",
+        "upperLeftX1": 55.668343,
+        "upperLeftY1": 12.549621
+    },
+    {
+        "ID": 23,
+        "TS": "2026-02-28T15:34:54.000Z",
+        "fixed": true,
+        "lowerRightX2": 55.664572,
+        "lowerRightY2": 12.572075,
+        "tag": "Vesterbro",
+        "upperLeftX1": 55.67304,
+        "upperLeftY1": 12.538857
+    },
+    {
+        "ID": 24,
+        "TS": "2026-02-28T17:26:35.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.668116,
+        "lowerRightY2": 12.5496,
+        "tag": "Bootleggers",
+        "upperLeftX1": 55.668264,
+        "upperLeftY1": 12.549394
+    },
+    {
+        "ID": 27,
+        "TS": "2026-04-02T10:47:05.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.715855,
+        "lowerRightY2": 12.520289,
+        "tag": "Casa Segger",
+        "upperLeftX1": 55.716282,
+        "upperLeftY1": 12.519571
+    },
+    {
+        "ID": 28,
+        "TS": "2026-04-04T22:28:30.000Z",
+        "fixed": false,
+        "lowerRightX2": 56.005757,
+        "lowerRightY2": 12.04459,
+        "tag": "Sommerhus",
+        "upperLeftX1": 56.006287,
+        "upperLeftY1": 12.043516
+    },
+    {
+        "ID": 29,
+        "TS": "2026-04-04T22:29:55.000Z",
+        "fixed": false,
+        "lowerRightX2": 55.992871,
+        "lowerRightY2": 12.069639,
+        "tag": "Asserbo",
+        "upperLeftX1": 56.029401,
+        "upperLeftY1": 11.973118
+    }
+]
