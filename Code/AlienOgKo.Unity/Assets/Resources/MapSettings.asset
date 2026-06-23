@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: MapSettings
   m_EditorClassIdentifier: Assembly-CSharp::AlienOgKo.MapSettings
   baseUrl: https://hvor-fanden-er-fanen.osc-fr1.scalingo.io
-  apiKey: 
+  apiKey: uMOGsj-PBDC68-6N7sf5
   neLatitude: 55.6235
   neLongitude: 12.07042
   swLatitude: 55.61706
