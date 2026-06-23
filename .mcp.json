@@ -1,0 +1,8 @@
+{
+  "mcpServers": {
+    "unity-mcp": {
+      "command": "/home/fehaar/devdrive/AlienOgKoApp/.claude/unity-mcp.sh",
+      "args": []
+    }
+  }
+}
