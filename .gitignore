@@ -43,3 +43,6 @@ Thumbs.db
 
 # Backend secrets
 Backend/.env
+
+# Superpowers scratch (progress ledgers, review packages)
+.superpowers/
