@@ -75,6 +75,16 @@ namespace AlienOgKo
 #endif
 
             facade.RegisterProxy(new PlayerProxy());
+
+            var mapSettings = Resources.Load<MapSettings>(MapSettings.ResourcePath);
+            if (mapSettings == null)
+            {
+                Debug.LogError($"MapSettings asset not found at Resources/{MapSettings.ResourcePath}. Create one via Assets > Create > AlienOgKo > Map Settings, or run Gosuman > Create Map Settings Asset, and place it under Assets/Resources.");
+            }
+            else
+            {
+                facade.RegisterProxy(new MapDataProxy(mapSettings));
+            }
         }
     }
 }
