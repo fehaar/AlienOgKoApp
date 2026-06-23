@@ -30,6 +30,9 @@ crashlytics-build.properties
 # Rider / VS
 .idea/
 .vs/
+
+# Obsidian (local vault config, used to browse docs/)
+.obsidian/
 *.csproj
 *.sln
 *.suo
