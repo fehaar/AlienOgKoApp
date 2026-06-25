@@ -1,0 +1,16 @@
+name: nakama1
+
+logger:
+  level: DEBUG
+
+console:
+  port: 7351
+
+socket:
+  port: 7350
+
+api:
+  port: 7349
+
+session:
+  token_expiry_sec: 7200

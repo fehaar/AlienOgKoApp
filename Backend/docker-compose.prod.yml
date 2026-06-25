@@ -1,0 +1,29 @@
+services:
+  nakama:
+    image: registry.heroiclabs.com/heroiclabs/nakama:3.37.0
+    entrypoint:
+      - "/bin/sh"
+      - "-ecx"
+      - >
+          /nakama/nakama migrate up --database.address ${NAKAMA_DATABASE_ADDRESS} &&
+          exec /nakama/nakama
+          --config /nakama/data/prod.yml
+          --database.address ${NAKAMA_DATABASE_ADDRESS}
+    restart: unless-stopped
+    volumes:
+      - ./nakama:/nakama/data
+      - nakama_data:/nakama/data/runtime
+    ports:
+      - "7349:7349"
+      - "7350:7350"
+      - "7351:7351"
+    env_file:
+      - .env
+    healthcheck:
+      test: ["CMD", "/nakama/nakama", "healthcheck"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  nakama_data:

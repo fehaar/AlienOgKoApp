@@ -49,3 +49,7 @@ Backend/.env
 
 # Superpowers scratch (progress ledgers, review packages)
 .superpowers/
+
+# Nakama generated runtime files
+Backend/nakama/.cookie
+Backend/nakama/runtime/
