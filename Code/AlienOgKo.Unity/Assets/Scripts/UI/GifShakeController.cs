@@ -1,4 +1,6 @@
 using UnityEngine;
+using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Controls;
 
 // Triggers the GIF animation on upward phone movement (accelerometer) or keyboard.
 // Keyboard controls: Space = play/restart, Left/Right = step frame (pauses), P = pause/resume.
@@ -6,21 +8,23 @@ using UnityEngine;
 public class GifShakeController : MonoBehaviour
 {
     [Header("Shake Detection")]
-    [SerializeField] float upwardThreshold = 1.2f;   // g-force delta to trigger
-    [SerializeField] float cooldownSeconds = 0.5f;    // minimum time between triggers
-    [SerializeField] float lowPassStrength = 0.1f;    // lower = smoother gravity removal
+    [SerializeField] float upwardThreshold = 1.2f;
+    [SerializeField] float cooldownSeconds = 0.5f;
+    [SerializeField] float lowPassStrength = 0.1f;
 
     GifAutoPlay _autoPlay;
     Vector3 _lowPass;
     float _cooldownRemaining;
-    bool _accelAvailable;
 
     void Awake()
     {
         _autoPlay = GetComponent<GifAutoPlay>();
-        _accelAvailable = SystemInfo.supportsAccelerometer;
-        if (_accelAvailable)
-            _lowPass = Input.acceleration;
+
+        if (Accelerometer.current != null)
+        {
+            InputSystem.EnableDevice(Accelerometer.current);
+            _lowPass = Accelerometer.current.acceleration.ReadValue();
+        }
     }
 
     void Update()
@@ -34,11 +38,11 @@ public class GifShakeController : MonoBehaviour
 
     void HandleAccelerometer()
     {
-        if (!_accelAvailable) return;
+        if (Accelerometer.current == null) return;
 
-        var accel = Input.acceleration;
+        var accel = (Vector3)Accelerometer.current.acceleration.ReadValue();
         _lowPass = Vector3.Lerp(_lowPass, accel, lowPassStrength);
-        float upwardForce = (accel - _lowPass).y;   // high-pass: removes gravity
+        float upwardForce = (accel - _lowPass).y;
 
         if (upwardForce > upwardThreshold && _cooldownRemaining <= 0f)
             Trigger();
@@ -46,16 +50,19 @@ public class GifShakeController : MonoBehaviour
 
     void HandleKeyboard()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        var kb = Keyboard.current;
+        if (kb == null) return;
+
+        if (kb.spaceKey.wasPressedThisFrame)
             Trigger();
 
-        if (Input.GetKeyDown(KeyCode.RightArrow))
+        if (kb.rightArrowKey.wasPressedThisFrame)
             _autoPlay.StepFrame(1);
 
-        if (Input.GetKeyDown(KeyCode.LeftArrow))
+        if (kb.leftArrowKey.wasPressedThisFrame)
             _autoPlay.StepFrame(-1);
 
-        if (Input.GetKeyDown(KeyCode.P))
+        if (kb.pKey.wasPressedThisFrame)
         {
             if (_autoPlay.IsPlaying) _autoPlay.Stop();
             else _autoPlay.Play();
