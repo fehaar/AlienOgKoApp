@@ -1,25 +1,34 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using UnityEngine.InputSystem.Controls;
 
-// Triggers the GIF animation on upward phone movement (accelerometer) or keyboard.
-// Keyboard controls: Space = play/restart, Left/Right = step frame (pauses), P = pause/resume.
-[RequireComponent(typeof(GifAutoPlay))]
+[RequireComponent(typeof(GifFrameController))]
 public class GifShakeController : MonoBehaviour
 {
     [Header("Shake Detection")]
-    [SerializeField] float upwardThreshold = 1.2f;
-    [SerializeField] float cooldownSeconds = 0.5f;
+    [SerializeField] float triggerThreshold = 0.6f;
     [SerializeField] float lowPassStrength = 0.1f;
+    [SerializeField] float idleThreshold = 0.15f;
+    [SerializeField] float idleTimeout = 0.5f;
 
-    GifAutoPlay _autoPlay;
+    [Header("Animation Timing")]
+    [SerializeField] float openingFps = 30f;
+    [SerializeField] float loopFps = 20f;
+    [SerializeField] float finishFps = 15f;
+    [SerializeField] int loopStartFrame = 11;
+    [SerializeField] int loopEndFrame = 23;
+
+    enum Phase { Idle, Opening, Looping, Finishing }
+
+    GifFrameController _ctrl;
     Vector3 _lowPass;
-    float _cooldownRemaining;
+    Phase _phase = Phase.Idle;
+    float _frame;
+    bool _loopForward;
+    float _idleTimer;
 
     void Awake()
     {
-        _autoPlay = GetComponent<GifAutoPlay>();
-
+        _ctrl = GetComponent<GifFrameController>();
         if (Accelerometer.current != null)
         {
             InputSystem.EnableDevice(Accelerometer.current);
@@ -29,49 +38,87 @@ public class GifShakeController : MonoBehaviour
 
     void Update()
     {
-        if (_cooldownRemaining > 0f)
-            _cooldownRemaining -= Time.deltaTime;
-
-        HandleAccelerometer();
-        HandleKeyboard();
-    }
-
-    void HandleAccelerometer()
-    {
-        if (Accelerometer.current == null) return;
-
-        var accel = (Vector3)Accelerometer.current.acceleration.ReadValue();
-        _lowPass = Vector3.Lerp(_lowPass, accel, lowPassStrength);
-        float upwardForce = (accel - _lowPass).y;
-
-        if (upwardForce > upwardThreshold && _cooldownRemaining <= 0f)
-            Trigger();
-    }
-
-    void HandleKeyboard()
-    {
-        var kb = Keyboard.current;
-        if (kb == null) return;
-
-        if (kb.spaceKey.wasPressedThisFrame)
-            Trigger();
-
-        if (kb.rightArrowKey.wasPressedThisFrame)
-            _autoPlay.StepFrame(1);
-
-        if (kb.leftArrowKey.wasPressedThisFrame)
-            _autoPlay.StepFrame(-1);
-
-        if (kb.pKey.wasPressedThisFrame)
+        float highPass = 0f;
+        if (Accelerometer.current != null)
         {
-            if (_autoPlay.IsPlaying) _autoPlay.Stop();
-            else _autoPlay.Play();
+            var accel = (Vector3)Accelerometer.current.acceleration.ReadValue();
+            _lowPass = Vector3.Lerp(_lowPass, accel, lowPassStrength);
+            highPass = (accel - _lowPass).y;
+        }
+
+        Tick(highPass);
+    }
+
+    void Tick(float highPass)
+    {
+        switch (_phase)
+        {
+            case Phase.Idle:
+                if (highPass > triggerThreshold || (Keyboard.current?.spaceKey.wasPressedThisFrame ?? false))
+                    BeginOpening();
+                break;
+
+            case Phase.Opening:
+                // Play 1 → loopEndFrame at constant fps
+                _frame += openingFps * Time.deltaTime;
+                if (_frame >= loopEndFrame)
+                {
+                    _frame = loopEndFrame;
+                    _loopForward = false; // next direction: backward toward loopStartFrame
+                    _idleTimer = 0f;
+                    _phase = Phase.Looping;
+                }
+                _ctrl.SetFrame((int)_frame);
+                break;
+
+            case Phase.Looping:
+                // Ping-pong between loopStartFrame and loopEndFrame at constant fps
+                float loopDelta = loopFps * Time.deltaTime;
+                _frame += _loopForward ? loopDelta : -loopDelta;
+
+                if (_frame <= loopStartFrame)
+                {
+                    _frame = loopStartFrame;
+                    _loopForward = true;
+                }
+                else if (_frame >= loopEndFrame)
+                {
+                    _frame = loopEndFrame;
+                    _loopForward = false;
+                }
+                _ctrl.SetFrame((int)_frame);
+
+                // Detect when movement stops
+                _idleTimer = Mathf.Abs(highPass) < idleThreshold
+                    ? _idleTimer + Time.deltaTime
+                    : 0f;
+
+                if (_idleTimer >= idleTimeout)
+                {
+                    // Drive to loopEndFrame before finishing so we always exit from frame 23
+                    _loopForward = true;
+                    _phase = Phase.Finishing;
+                }
+                break;
+
+            case Phase.Finishing:
+                _frame += finishFps * Time.deltaTime;
+                if (_frame >= _ctrl.FrameCount)
+                {
+                    _frame = 0;
+                    _phase = Phase.Idle;
+                    _ctrl.SetFrame(0);
+                    break;
+                }
+                _ctrl.SetFrame((int)_frame);
+                break;
         }
     }
 
-    void Trigger()
+    void BeginOpening()
     {
-        _cooldownRemaining = cooldownSeconds;
-        _autoPlay.Restart();
+        _phase = Phase.Opening;
+        _frame = 1f;
+        _ctrl.SetFrame(1);
     }
 }
