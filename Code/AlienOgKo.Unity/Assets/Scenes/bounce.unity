@@ -133,6 +133,7 @@ GameObject:
   - component: {fileID: 51053980}
   - component: {fileID: 51053979}
   - component: {fileID: 51053983}
+  - component: {fileID: 51053984}
   m_Layer: 0
   m_Name: AlienKo
   m_TagString: Untagged
@@ -154,11 +155,11 @@ RectTransform:
   m_Children: []
   m_Father: {fileID: 1394989942}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 0.5, y: 0}
+  m_AnchorMax: {x: 0.5, y: 0.625}
   m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 512, y: 512}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_SizeDelta: {x: 0, y: 0}
+  m_Pivot: {x: 0.5, y: 0}
 --- !u!114 &51053979
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -301,6 +302,20 @@ MonoBehaviour:
   upwardThreshold: 1.2
   cooldownSeconds: 0.5
   lowPassStrength: 0.1
+--- !u!114 &51053984
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 51053977}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 86710e43de46f6f4bac7c8e50813a599, type: 3}
+  m_Name:
+  m_EditorClassIdentifier: UnityEngine.UI::UnityEngine.UI.AspectRatioFitter
+  m_AspectMode: 2
+  m_AspectRatio: 1
 --- !u!1 &1394989938
 GameObject:
   m_ObjectHideFlags: 0
@@ -440,7 +455,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 2
-  m_BackGroundColor: {r: 0.08, g: 0.08, b: 0.08, a: 1}
+  m_BackGroundColor: {r: 0.157, g: 0.227, b: 0.337, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
