@@ -1,7 +1,7 @@
-using System;
 using System.IO;
 using UnityEditor;
 using UnityEditor.Build.Reporting;
+using UnityEditor.Build;
 using UnityEngine;
 
 public static class BuildScript
@@ -44,5 +44,19 @@ public static class BuildScript
         PlayerSettings.applicationIdentifier = "dk.gosuman.alienogko";
         PlayerSettings.bundleVersion         = "0.1.0";
         PlayerSettings.Android.bundleVersionCode = 1;
+
+        ConfigureIcon();
+    }
+
+    static void ConfigureIcon()
+    {
+        const string iconPath = "Assets/Graphics/Icons/AppIcon_1024.png";
+        AssetDatabase.ImportAsset(iconPath, ImportAssetOptions.ForceUpdate);
+        var icon = AssetDatabase.LoadAssetAtPath<Texture2D>(iconPath);
+        if (icon == null) { Debug.LogWarning("[BuildScript] Icon not found at " + iconPath); return; }
+
+        // Set as the default Android icon (covers all densities)
+        PlayerSettings.SetIcons(NamedBuildTarget.Android, new[] { icon }, IconKind.Any);
+        Debug.Log("[BuildScript] Android icon set from " + iconPath);
     }
 }

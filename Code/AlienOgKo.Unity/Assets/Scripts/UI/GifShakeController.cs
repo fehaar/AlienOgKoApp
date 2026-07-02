@@ -10,12 +10,14 @@ public class GifShakeController : MonoBehaviour
     [SerializeField] float idleThreshold = 0.15f;
     [SerializeField] float idleTimeout = 0.5f;
 
-    [Header("Animation Timing")]
+    [Header("Animation Frames")]
+    [SerializeField] int loopStartFrame = 11;
+    [SerializeField] int loopEndFrame = 23;
+
+    [Header("Animation Speed (fps)")]
     [SerializeField] float openingFps = 30f;
     [SerializeField] float loopFps = 20f;
     [SerializeField] float finishFps = 15f;
-    [SerializeField] int loopStartFrame = 11;
-    [SerializeField] int loopEndFrame = 23;
 
     enum Phase { Idle, Opening, Looping, Finishing }
 
@@ -25,6 +27,8 @@ public class GifShakeController : MonoBehaviour
     float _frame;
     bool _loopForward;
     float _idleTimer;
+    float _prevHighPass;
+    float _retriggerCooldown;
 
     void Awake()
     {
@@ -33,6 +37,19 @@ public class GifShakeController : MonoBehaviour
         {
             InputSystem.EnableDevice(Accelerometer.current);
             _lowPass = Accelerometer.current.acceleration.ReadValue();
+        }
+    }
+
+    void Start()
+    {
+        // In the editor (no phone), start straight in the loop so the animation is visible
+        if (!Application.isMobilePlatform)
+        {
+            _frame = loopEndFrame;
+            _loopForward = false;
+            _idleTimer = 0f;
+            _phase = Phase.Looping;
+            _ctrl.SetFrame(loopEndFrame);
         }
     }
 
@@ -46,7 +63,19 @@ public class GifShakeController : MonoBehaviour
             highPass = (accel - _lowPass).y;
         }
 
+        HandleSpace();
         Tick(highPass);
+        _prevHighPass = highPass;
+    }
+
+    void HandleSpace()
+    {
+        if (!(Keyboard.current?.spaceKey.wasPressedThisFrame ?? false)) return;
+
+        if (_phase == Phase.Looping)
+            _phase = Phase.Finishing;   // Space during loop → play end
+        else
+            BeginOpening();             // Space during Idle/Finishing → restart
     }
 
     void Tick(float highPass)
@@ -54,17 +83,19 @@ public class GifShakeController : MonoBehaviour
         switch (_phase)
         {
             case Phase.Idle:
-                if (highPass > triggerThreshold || (Keyboard.current?.spaceKey.wasPressedThisFrame ?? false))
+                if (_retriggerCooldown > 0f)
+                    _retriggerCooldown -= Time.deltaTime;
+                // Only trigger on a rising edge after cooldown has expired
+                else if (highPass > triggerThreshold && _prevHighPass <= triggerThreshold)
                     BeginOpening();
                 break;
 
             case Phase.Opening:
-                // Play 1 → loopEndFrame at constant fps
                 _frame += openingFps * Time.deltaTime;
                 if (_frame >= loopEndFrame)
                 {
                     _frame = loopEndFrame;
-                    _loopForward = false; // next direction: backward toward loopStartFrame
+                    _loopForward = false;
                     _idleTimer = 0f;
                     _phase = Phase.Looping;
                 }
@@ -72,32 +103,22 @@ public class GifShakeController : MonoBehaviour
                 break;
 
             case Phase.Looping:
-                // Ping-pong between loopStartFrame and loopEndFrame at constant fps
                 float loopDelta = loopFps * Time.deltaTime;
                 _frame += _loopForward ? loopDelta : -loopDelta;
 
-                if (_frame <= loopStartFrame)
-                {
-                    _frame = loopStartFrame;
-                    _loopForward = true;
-                }
-                else if (_frame >= loopEndFrame)
-                {
-                    _frame = loopEndFrame;
-                    _loopForward = false;
-                }
+                if (_frame <= loopStartFrame) { _frame = loopStartFrame; _loopForward = true; }
+                else if (_frame >= loopEndFrame) { _frame = loopEndFrame; _loopForward = false; }
+
                 _ctrl.SetFrame((int)_frame);
 
-                // Detect when movement stops
-                _idleTimer = Mathf.Abs(highPass) < idleThreshold
-                    ? _idleTimer + Time.deltaTime
-                    : 0f;
-
-                if (_idleTimer >= idleTimeout)
+                // On device: exit loop when movement stops
+                if (Application.isMobilePlatform)
                 {
-                    // Drive to loopEndFrame before finishing so we always exit from frame 23
-                    _loopForward = true;
-                    _phase = Phase.Finishing;
+                    _idleTimer = Mathf.Abs(highPass) < idleThreshold
+                        ? _idleTimer + Time.deltaTime : 0f;
+
+                    if (_idleTimer >= idleTimeout)
+                        _phase = Phase.Finishing;
                 }
                 break;
 
@@ -106,6 +127,7 @@ public class GifShakeController : MonoBehaviour
                 if (_frame >= _ctrl.FrameCount)
                 {
                     _frame = 0;
+                    _retriggerCooldown = 1f;
                     _phase = Phase.Idle;
                     _ctrl.SetFrame(0);
                     break;
